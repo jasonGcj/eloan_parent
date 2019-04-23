@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/eloan_core/eloan_core.iml" filepath="$PROJECT_DIR$/eloan_core/eloan_core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/eloan_mockserver/eloan_mockserver.iml" filepath="$PROJECT_DIR$/eloan_mockserver/eloan_mockserver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/eloan_parent.iml" filepath="$PROJECT_DIR$/eloan_parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mgrtool/mgrtool.iml" filepath="$PROJECT_DIR$/mgrtool/mgrtool.iml" />
+      <module fileurl="file://$PROJECT_DIR$/uiweb/uiweb.iml" filepath="$PROJECT_DIR$/uiweb/uiweb.iml" />
+    </modules>
+  </component>
+</project>

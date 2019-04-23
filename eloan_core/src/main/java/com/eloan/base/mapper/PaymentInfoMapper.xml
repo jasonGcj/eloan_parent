@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eloan.base.mapper.PaymentInfoMapper" >
+
+ 
+  <insert id="insert" parameterType="PaymentInfo" useGeneratedKeys="true" keyProperty="id" >
+
+  INSERT INTO  payment_info  VALUES
+   (null, #{createuserId}, #{state}, #{platformOrderId}, #{channel}, #{amount}, #{payMessage}, #{created}, #{updated})
+  
+  </insert>
+  
+  
+<!--   //查询最近的一条支付信息
+	PaymentInfo selectLatest(); -->
+	
+	<select id="selectLatest" resultType="PaymentInfo">
+		select * from payment_info 
+			order by created desc limit 1
+	</select>
+	
+	
+	
+	<select id="selectById" resultType="PaymentInfo">
+		select * from payment_info  where id = #{id}
+			
+	</select>
+</mapper>
+  

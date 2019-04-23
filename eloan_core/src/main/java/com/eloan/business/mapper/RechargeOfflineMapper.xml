@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eloan.business.mapper.RechargeOfflineMapper" >
+  <resultMap id="BaseResultMap" type="com.eloan.business.domain.RechargeOffline" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="state" property="state" jdbcType="TINYINT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="auditTime" property="auditTime" jdbcType="TIMESTAMP" />
+    <result column="applyTime" property="applyTime" jdbcType="TIMESTAMP" />
+  
+    <result column="tradeCode" property="tradeCode" jdbcType="VARCHAR" />
+    <result column="tradeTime" property="tradeTime" jdbcType="TIMESTAMP" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="note" property="note" jdbcType="VARCHAR" />
+    
+     <association property="applier" javaType="com.eloan.base.domain.Logininfo" columnPrefix="ap_">
+    	<id column="id" property="id"/>
+    	<result column="username" property="username"/>
+    </association>
+    
+    <association property="auditor" javaType="com.eloan.base.domain.Logininfo" columnPrefix="au_">
+    	<id column="id" property="id"/>
+    	<result column="username" property="username"/>
+    </association>
+   
+   <!-- 新的写法  意思同上 --> 
+    <association property="bankInfo" javaType="com.eloan.business.domain.PlatformBankinfo"
+    columnPrefix="pb_" resultMap="com.eloan.business.mapper.PlatformBankinfoMapper.BaseResultMap" />
+</resultMap>
+	<sql id="base_column">
+		r.id, r.state, r.remark, r.auditTime, r.applyTime,  r.tradeCode, 
+	    r.tradeTime, r.amount, r.note, 
+	    ap.id as ap_id , ap.username as ap_username ,
+	    au.id as au_id , au.username as au_username ,
+	    pb.id as pb_id ,pb.bankName as pb_bankName , pb.forkName as pb_forkName , 
+	    pb.accountName as pb_accountName , pb.accountNumber as pb_accountNumber
+	</sql>
+	
+	<sql id="base_table">
+		rechargeoffline  r JOIN logininfo ap ON r.applier_id = ap.id
+   							LEFT JOIN logininfo au ON r.auditor_id =au.id
+   							join platformbankinfo pb on r.bankInfo_id = pb.id 
+	</sql>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into rechargeoffline (state, remark, auditTime,applyTime, auditor_id, applier_id, 
+      tradeCode, tradeTime, amount,  note, bankInfo_id)
+    values (#{state}, #{remark}, #{auditTime}, 
+      #{applyTime}, #{auditor.id}, #{applier.id}, 
+      #{tradeCode}, #{tradeTime}, #{amount}, 
+      #{note}, #{bankInfo.id})
+  </insert>
+  
+  
+  <update id="updateByPrimaryKey"  >
+    update rechargeoffline
+    set state = #{state},
+      remark = #{remark},
+      auditTime = #{auditTime},
+      applyTime = #{applyTime},
+      auditor_id = #{auditor.id},
+      applier_id = #{applier.id},
+      tradeCode = #{tradeCode},
+      tradeTime = #{tradeTime},
+      amount = #{amount},
+      note = #{note},
+      bankInfo_id = #{bankInfo.id}
+    where id = #{id}
+  </update>
+  
+   <sql id="condition">
+	  <where>
+	  	<if test="state>-1">
+	  		AND r.state = #{state} 
+	  	</if>
+	  	<if test="beginDate!=null">
+	  		AND r.tradeTime &gt;= #{beginDate}
+	  	</if>
+	  	<if test="endDate!=null">
+	  		AND r.tradeTime &lt;= #{endDate}
+	  	</if>
+	  	<if test="applierId!=null">
+	  		AND r.applier_id = #{applierId}
+	  	</if>
+	  	
+	  	<if test="bankInfoId >-1">
+	  		AND r.bankInfo_id = #{bankInfoId}
+	  	</if>
+	  	<if test="tradeCode!=null">
+	  		AND r.tradeCode = #{tradeCode}
+	  	</if>
+	  	
+	  	
+	  </where>
+  </sql>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select <include refid="base_column" />
+    from <include refid="base_table" />
+    where r.id = #{id}
+  </select>
+  
+  <select id="queryForCount" resultType="int">
+  	select count(r.id) 
+  	from rechargeoffline r
+  </select>
+  
+  <select id="query" resultMap="BaseResultMap">
+  	select <include refid="base_column" />
+    from <include refid="base_table" />
+    <include refid="condition" />
+    limit #{start} , #{pageSize}
+  </select>
+  
+
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eloan.business.mapper.AccountFlowMapper" >
+  <resultMap id="BaseResultMap" type="com.eloan.business.domain.AccountFlow" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="accountActionType" property="accountActionType" jdbcType="TINYINT" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="note" property="note" jdbcType="VARCHAR" />
+    <result column="balance" property="useableAmount" jdbcType="DECIMAL" />
+    <result column="freezed" property="freezedAmount" jdbcType="DECIMAL" />
+    <result column="actionTime" property="vdate" jdbcType="TIMESTAMP" />
+    <result column="account_id" property="accountId" jdbcType="BIGINT" />
+  </resultMap>
+  
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into accountflow (accountActionType, amount, note, 
+      balance, freezed, actionTime, account_id)
+    values (#{accountActionType}, #{amount}, #{note}, 
+      #{useableAmount}, #{freezedAmount}, #{vdate}, 
+      #{accountId})
+  </insert>
+  
+</mapper>

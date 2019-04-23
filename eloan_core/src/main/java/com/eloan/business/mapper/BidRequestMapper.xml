@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eloan.business.mapper.BidRequestMapper" >
+  <resultMap id="BaseResultMap" type="com.eloan.business.domain.BidRequest" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+	<result column="version" property="version" jdbcType="INTEGER" />
+	<result column="bidRequestType" property="bidRequestType" />
+	<result column="bidRequestState" property="bidRequestState" />
+	<result column="bidRequestAmount" property="bidRequestAmount" />
+	<result column="currentRate" property="currentRate" />
+	<result column="monthes2Return" property="monthes2Return" />
+	<result column="bidCount" property="bidCount" />
+	<result column="totalRewardAmount" property="totalRewardAmount" />
+	<result column="currentSum" property="currentSum" />
+	<result column="title" property="title" />
+	<result column="description" property="description" />
+	<result column="note" property="note" />
+	<result column="disableDate" property="disableDate" />
+	<result column="disableDays" property="disableDays" />
+	<result column="minBidAmount" property="minBidAmount" />
+	<result column="applyTime" property="applyDate" />
+	<result column="publishTime" property="publishDate" />
+	<result column="returnType" property="returnType" jdbcType="TINYINT" />
+	<association property="createUser" javaType="Logininfo" columnPrefix="l_">
+	 <id property="id" column="id"  />
+	 <id property="username" column="username"  />
+	</association>
+	<collection property="bids" column="id" ofType="com.eloan.business.domain.Bid" 
+select="com.eloan.business.mapper.BidMapper.selectBidByBidRequestId"/>
+  </resultMap>
+  <sql id="base_column">
+	b.id, b.version, b.bidRequestType, b.bidRequestState, b.bidRequestAmount,b.currentRate,
+	b.monthes2Return, b.bidCount, b.totalRewardAmount, b.currentSum, b.title, b.description,b.note,
+	b.disableDate, b.createuser_id, b.disableDays, b.minBidAmount, b.applyTime,b.publishTime, b.returnType ,
+	l.id as l_id , l.username as l_username 
+  </sql>
+  <insert id="insert" parameterType="com.eloan.business.domain.BidRequest" useGeneratedKeys="true" keyProperty="id">
+  insert into bidrequest(version,bidRequestType,bidRequestState
+  ,bidRequestAmount,currentRate,monthes2Return,bidCount,totalRewardAmount,currentSum,
+  title,description,note,disableDate,createuser_id,disableDays,minBidAmount,
+  applyTime,publishTime,returnType)
+  values(0,#{bidRequestType},#{bidRequestState},#{bidRequestAmount},#{currentRate}
+  ,#{monthes2Return},#{bidCount},#{totalRewardAmount},#{currentSum},#{title},
+  #{description},#{note},#{disableDate},#{createUser.id},#{disableDays},#{minBidAmount},
+  #{applyDate},#{publishDate},#{returnType})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.eloan.business.domain.BidRequest" >
+    update bidrequest
+    set version=version+1,
+    bidRequestType=#{bidRequestType},
+    bidRequestState=#{bidRequestState},
+    bidRequestAmount=#{bidRequestAmount},
+    currentRate=#{currentRate},
+    monthes2Return=#{monthes2Return},
+    bidCount=#{bidCount},
+    totalRewardAmount=#{totalRewardAmount},
+    currentSum=#{currentSum},
+    title=#{title},
+    description=#{description},
+    note=#{note},
+    disableDate=#{disableDate},
+    createuser_id=#{createUser.id},
+    disableDays=#{disableDays},
+    minBidAmount=#{minBidAmount},
+    applyTime=#{applyDate},
+    publishTime=#{publishDate},
+    returnType=#{returnType}
+    where id=#{id} and version=#{version}
+  </update>
+  
+  
+
+  
+  
+  <select id="selectBidRequestById" resultMap="BaseResultMap">
+    select br.id,br.version,br.bidRequestType,br.bidRequestState
+  ,br.bidRequestAmount,br.currentRate,br.monthes2Return,br.bidCount,br.totalRewardAmount,br.currentSum,
+  br.title,br.description,br.note,br.disableDate,br.disableDays,br.minBidAmount,
+  br.applyTime,br.publishTime,br.returnType,l.id as l_id,l.username as l_username  
+    from bidrequest br 
+    left join logininfo l on br.createuser_id=l.id
+    where br.id=#{id}
+  </select>
+  
+  
+  <sql id="condition">
+   <where>
+	   	<if test="creatorId != null">
+		 	AND b.createuser_id = #{creatorId}
+	   	 </if>
+   
+   	 <if test="bidRequestState>-1">
+   	 	AND b.bidRequestState = #{bidRequestState}
+   	 </if>
+   	 <if test="bidRequestStates!=null"> 
+   	 	AND b.bidRequestState IN
+   	 	<foreach collection="bidRequestStates" item="state" open="(" close=")" separator=",">
+   	 		#{state}
+   	 	</foreach>
+   	 </if> 
+   	 
+   	 <if test="beginDate!=null"> 
+   	 	AND b.applyTime >= #{beginDate}
+   	 </if> 
+   	 
+   	 <if test="endDate!=null"> 
+   	 	AND b.applyTime &lt; #{endDate}
+   	 </if> 
+   	 
+   	 
+   	    	 
+   </where>
+  </sql>
+  <select id="queryForCount" resultType="int">
+	select count(b.id) 
+	 from bidrequest b 
+	<include refid="condition" />
+  </select>
+  <select id="query" resultMap="BaseResultMap">
+  	select <include refid="base_column" />
+  	 from bidrequest b left join logininfo l on b.createuser_id =l.id
+    <include refid="condition" />
+    <if test="orderBy!=null">
+    	ORDER BY ${orderBy}  ${orderType}
+    </if> 
+    LIMIT #{start} , #{pageSize}
+  </select> 
+</mapper>

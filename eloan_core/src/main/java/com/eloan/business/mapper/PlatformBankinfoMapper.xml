@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eloan.business.mapper.PlatformBankinfoMapper" >
+  <resultMap id="BaseResultMap" type="com.eloan.business.domain.PlatformBankinfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="bankname" property="bankName" jdbcType="VARCHAR" />
+    <result column="accountname" property="accountName" jdbcType="VARCHAR" />
+    <result column="accountnumber" property="accountNumber" jdbcType="VARCHAR" />
+    <result column="bankforkName" property="forkName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from platformbankinfo
+    where id = #{id}
+  </delete>
+  
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into platformbankinfo (bankname, accountname, accountnumber, bankforkName)
+    values (#{bankName}, #{accountName}, #{accountNumber}, 
+      #{forkName})
+  </insert>
+  
+  <update id="updateByPrimaryKey" >
+    update platformbankinfo
+    set bankname = #{bankName},
+      accountname = #{accountName},
+      accountnumber = #{accountNumber},
+      bankforkName = #{forkName}
+    where id = #{id}
+  </update>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, bankname, accountname, accountnumber, bankforkName
+    from platformbankinfo
+    where id = #{id}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, bankname, accountname, accountnumber, bankforkName
+    from platformbankinfo
+  </select>
+  
+  <select id="queryForCount"  resultType="int" >
+  	SELECT COUNT(id) 
+  	from platformbankinfo
+  </select>
+  
+  <select id="query" resultMap="BaseResultMap"> 
+  	select id, bankname, accountname, accountnumber, bankforkName
+    from platformbankinfo
+    limit #{start} ,#{pageSize} 
+  </select>
+  
+  
+  
+  
+  
+  
+</mapper>
