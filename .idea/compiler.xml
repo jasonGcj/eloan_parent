@@ -12,12 +12,5 @@
         <module name="uiweb" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="eloan_core" target="1.7" />
-      <module name="eloan_mockserver" target="1.7" />
-      <module name="eloan_parent" target="1.7" />
-      <module name="mgrtool" target="1.7" />
-      <module name="uiweb" target="1.7" />
-    </bytecodeTargetLevel>
   </component>
 </project>
