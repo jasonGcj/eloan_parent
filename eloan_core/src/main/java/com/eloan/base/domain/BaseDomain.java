@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-//更改
+//更改 master
 public class BaseDomain implements Serializable {
 	private Long id;
 	
